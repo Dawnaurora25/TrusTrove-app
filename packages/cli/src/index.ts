@@ -5,6 +5,7 @@ import {
   checkPoolBalanceCommand,
   type CheckPoolBalanceOptions,
 } from "./commands/check-pool-balance.js";
+import { registerListInvoicesCommand } from "./commands/list-invoices.js";
 
 function readVersion(): string {
   try {
