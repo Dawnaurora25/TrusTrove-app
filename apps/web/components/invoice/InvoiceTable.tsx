@@ -14,6 +14,7 @@ import { formatAmount } from "@/lib/assets";
 import { Invoice } from "@/types";
 import { Button } from "@/components/ui/button";
 import { InvoiceStatus } from "./InvoiceStatus";
+import { InvoiceCard } from "./InvoiceCard";
 import { truncateAddress } from "@/lib/format";
 import {
   ChevronLeft,
@@ -48,6 +49,7 @@ interface InvoiceTableProps {
   emptyStateDescription?: string;
   emptyStateAction?: EmptyStateAction;
   pagination?: InvoicePaginationProps;
+  role?: "issuer" | "buyer" | "lp";
   /**
    * Opt into multi-select mode: adds a checkbox per row, a "select all on
    * page" checkbox in the header, and a selection toolbar. Off by default, so
@@ -267,6 +269,7 @@ export function InvoiceTable({
   emptyStateDescription,
   emptyStateAction,
   pagination,
+  role,
   selectable = false,
   selectedIds,
   onSelectionChange,
@@ -654,6 +657,19 @@ export function InvoiceTable({
                 })}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Cards view (hidden on desktop >= md) */}
+          <div className="md:hidden space-y-4">
+            {invoices.map((invoice) => (
+              <InvoiceCard
+                key={invoice.id}
+                invoice={invoice}
+                role={role}
+                onSelect={onSelectInvoice}
+                isSelected={activeId === invoice.id}
+              />
+            ))}
           </div>
 
           {pagination && <InvoicePagination {...pagination} />}

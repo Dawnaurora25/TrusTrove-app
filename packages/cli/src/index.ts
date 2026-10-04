@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import { readFileSync } from "node:fs";
 import { Command } from "commander";
-import { registerListInvoicesCommand } from "./commands/list-invoices.js";
+import {
+  checkPoolBalanceCommand,
+  type CheckPoolBalanceOptions,
+} from "./commands/check-pool-balance.js";
 
 function readVersion(): string {
   try {
@@ -23,25 +26,14 @@ program
   )
   .version(readVersion(), "-v, --version", "output the current version");
 
-program.addHelpText(
-  "afterAll",
-  [
-    "",
-    "Commands:",
-    "  list-invoices   List invoices by status or issuer (read-only call)",
-    "",
-    "Examples:",
-    "  $ trusttrove list-invoices --status Funded --public-key G...",
-    "  $ trusttrove list-invoices --issuer G... --public-key G...",
-    "",
-    "  --public-key may be replaced by TRUSTTROVE_PUBLIC_KEY, and",
-    "  --contract-id by INVOICE_CONTRACT_ID (see .env.example).",
-    "",
-    "Further commands (check-pool-balance) land in follow-up issues built",
-    "on @trusttrove/sdk.",
-    "",
-  ].join("\n"),
-);
+program
+  .command("check-pool-balance")
+  .description("Fetch and print pool balance stats for the configured pool")
+  .option("--public-key <key>", "public key for the read-only simulation")
+  .option("--pool-contract-id <id>", "override the pool contract ID")
+  .action(async (options: CheckPoolBalanceOptions) => {
+    await checkPoolBalanceCommand(options);
+  });
 
 registerListInvoicesCommand(program);
 
