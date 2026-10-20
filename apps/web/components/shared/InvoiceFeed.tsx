@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { useRecentEvents } from "@/hooks/useEvents";
 import { InvoiceFeedSkeleton } from "@/components/shared/SkeletonLoader";
-import type { EventLog } from "@/types";
+import { getEventDataString, type EventLog } from "@/types";
 
 const FEED_LIMIT = 6;
 const POLL_INTERVAL_MS = 10000;
@@ -72,8 +72,7 @@ function formatRelativeTime(ledgerClosedAt: number): string {
 }
 
 function toFeedEntry(event: EventLog): FeedEntry {
-  const invoiceId =
-    typeof event.data?.invoice_id === "string" ? event.data.invoice_id : "";
+  const invoiceId = getEventDataString(event, "invoice_id") ?? "";
   const invoiceShort = invoiceId
     ? `INV#${invoiceId.slice(0, 6)}…`
     : "On-chain event";

@@ -3,7 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { ArrowUpRight, Pause, Play } from "lucide-react";
 import { useRecentEvents } from "@/hooks/useEvents";
-import type { EventLog } from "@/types";
+import {
+  getEventDataBigInt,
+  getEventDataNumber,
+  getEventDataString,
+  type EventLog,
+} from "@/types";
 
 interface TickerItem {
   id: string;
@@ -43,20 +48,19 @@ export function TopStatusBar() {
   const formatEventForTicker = (event: EventLog): TickerItem => {
     // Extract amount from event data (assuming it's in USDC)
     let amount = "0 USDC";
-    if (event.data && event.data.funded_amount) {
-      const amountInUSDC = Number(
-        BigInt(event.data.funded_amount) / 10_000_000n,
-      ); // Convert from stroops (7 decimals) to USDC
-      amount = `${Math.round(amountInUSDC).toLocaleString()} USDC`;
-    } else if (event.data && event.data.face_value) {
-      const amountInUSDC = Number(BigInt(event.data.face_value) / 10_000_000n); // Convert from stroops (7 decimals) to USDC
+    const invoiceAmount =
+      getEventDataBigInt(event, "funded_amount") ??
+      getEventDataBigInt(event, "face_value");
+    if (invoiceAmount !== undefined) {
+      const amountInUSDC = Number(invoiceAmount / 10_000_000n); // Convert from stroops (7 decimals) to USDC
       amount = `${Math.round(amountInUSDC).toLocaleString()} USDC`;
     }
 
     // Extract discount from event data (in basis points)
     let discount = "0.0%";
-    if (event.data && event.data.discount_bps) {
-      const discountPercent = Number(event.data.discount_bps) / 100;
+    const discountBps = getEventDataNumber(event, "discount_bps");
+    if (discountBps !== undefined) {
+      const discountPercent = discountBps / 100;
       discount = `${discountPercent.toFixed(1)}%`;
     }
 
@@ -77,10 +81,12 @@ export function TopStatusBar() {
 
     // Generate SME name based on event data
     let sme = "Unknown SME";
-    if (event.data.buyer) {
-      sme = `${event.data.buyer.slice(0, 8)}...`;
-    } else if (event.data.issuer) {
-      sme = `${event.data.issuer.slice(0, 8)}...`;
+    const buyer = getEventDataString(event, "buyer");
+    const issuer = getEventDataString(event, "issuer");
+    if (buyer) {
+      sme = `${buyer.slice(0, 8)}...`;
+    } else if (issuer) {
+      sme = `${issuer.slice(0, 8)}...`;
     }
 
     return {

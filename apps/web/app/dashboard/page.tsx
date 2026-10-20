@@ -19,7 +19,7 @@ import {
   ActivityTimelineSkeleton,
 } from "@/components/shared/SkeletonLoader";
 import { Layers, Plus, CheckCircle2, Circle, Lock } from "lucide-react";
-import { Invoice } from "@/types";
+import { Invoice, getEventDataString } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatAmount } from "@/lib/assets";
 import { truncateAddress } from "@/lib/format";
@@ -103,7 +103,8 @@ export default function SMEDashboard() {
       trigger_default: t("activity.types.defaulted"),
     };
     const type = typeMap[event.event_type] || event.event_type;
-    const invId: string = event.data?.invoice_id || "";
+    const invId = getEventDataString(event, "invoice_id") ?? "";
+    const buyer = getEventDataString(event, "buyer");
     const invShort = invId
       ? t("activity.invoiceRef", { id: invId.slice(0, 4) })
       : "";
@@ -113,9 +114,7 @@ export default function SMEDashboard() {
       case "create":
         details = t("activity.details.created", {
           invoice: invShort,
-          buyer: event.data?.buyer
-            ? `${event.data.buyer.slice(0, 4)}...`
-            : t("activity.unknownBuyer"),
+          buyer: buyer ? `${buyer.slice(0, 4)}...` : t("activity.unknownBuyer"),
         });
         break;
       case "InvoiceListed":

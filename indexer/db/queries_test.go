@@ -229,6 +229,14 @@ func TestGetProtocolStats_CountsListenerStatuses(t *testing.T) {
 	}
 	t.Cleanup(func() { _ = tx.Rollback(ctx) })
 
+	// `go test ./...` runs packages in parallel against the same database, and
+	// other packages (e.g. listener) insert invoices while this test runs. Take
+	// an exclusive table lock before clearing so those writers block until this
+	// transaction rolls back; otherwise they can commit rows that skew the
+	// aggregate assertions below.
+	if _, err := tx.Exec(ctx, "LOCK TABLE invoices IN ACCESS EXCLUSIVE MODE"); err != nil {
+		t.Fatalf("lock invoices: %v", err)
+	}
 	if _, err := tx.Exec(ctx, "DELETE FROM invoices"); err != nil {
 		t.Fatalf("clear invoices: %v", err)
 	}

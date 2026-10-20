@@ -217,6 +217,14 @@ describe("API functions", () => {
   });
 
   describe("getInvoices", () => {
+    const emptyPage = {
+      data: [],
+      total: 0,
+      page: 1,
+      limit: 10,
+      totalPages: 0,
+    };
+
     it("should get invoices with filters", async () => {
       const rawInvoices = {
         data: [{ id: "1" }, { id: "2" }],
@@ -236,6 +244,53 @@ describe("API functions", () => {
       });
       expect(result.total).toEqual(2);
       expect(result.data.length).toEqual(2);
+    });
+
+    it("should serialize every filter into the exact query string", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(emptyPage),
+      });
+
+      await getInvoices({
+        status: "Funded",
+        issuer: "GISSUE",
+        page: 2,
+        limit: 25,
+      });
+
+      expect(mockFetch.mock.calls[0][0]).toBe(
+        "http://localhost:8080/invoices?status=Funded&issuer=GISSUE&page=2&limit=25",
+      );
+    });
+
+    it("should not append a trailing question mark when there are no filters", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(emptyPage),
+      });
+
+      await getInvoices();
+
+      const url = mockFetch.mock.calls[0][0] as string;
+      expect(url).toBe("http://localhost:8080/invoices");
+      expect(url).not.toMatch(/\?$/);
+    });
+
+    it("should URL-encode filter values with special characters", async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(emptyPage),
+      });
+
+      await getInvoices({
+        status: "Funded & Active",
+        issuer: "G/ABC?D",
+      });
+
+      expect(mockFetch.mock.calls[0][0]).toBe(
+        "http://localhost:8080/invoices?status=Funded+%26+Active&issuer=G%2FABC%3FD",
+      );
     });
   });
 
