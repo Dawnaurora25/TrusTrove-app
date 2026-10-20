@@ -71,8 +71,17 @@ export function DiscountCalculator() {
   return (
     <div className="bg-card border border-border rounded-lg overflow-hidden">
       {/* Tabs */}
-      <div className="flex border-b border-border bg-[#080c10]/60">
+      <div
+        role="tablist"
+        aria-label="Calculator type"
+        className="flex border-b border-border bg-[#080c10]/60"
+      >
         <button
+          role="tab"
+          id="tab-sme"
+          aria-controls="tabpanel-sme"
+          aria-selected={activeTab === "sme"}
+          tabIndex={activeTab === "sme" ? 0 : -1}
           onClick={handleSelectSme}
           className={`flex-1 py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-center border-r border-border transition-colors ${
             activeTab === "sme"
@@ -83,6 +92,11 @@ export function DiscountCalculator() {
           SME Financing Calculator
         </button>
         <button
+          role="tab"
+          id="tab-lp"
+          aria-controls="tabpanel-lp"
+          aria-selected={activeTab === "lp"}
+          tabIndex={activeTab === "lp" ? 0 : -1}
           onClick={handleSelectLp}
           className={`flex-1 py-3 px-4 font-mono text-xs font-bold uppercase tracking-wider text-center transition-colors ${
             activeTab === "lp"
@@ -95,7 +109,15 @@ export function DiscountCalculator() {
       </div>
 
       <div className="p-6 space-y-6">
-        {activeTab === "sme" ? <SmeCalculator /> : <LpCalculator />}
+        {activeTab === "sme" ? (
+          <div role="tabpanel" id="tabpanel-sme" aria-labelledby="tab-sme">
+            <SmeCalculator />
+          </div>
+        ) : (
+          <div role="tabpanel" id="tabpanel-lp" aria-labelledby="tab-lp">
+            <LpCalculator />
+          </div>
+        )}
 
         {/* Disclaimer row */}
         <div className="border-t border-border pt-4 text-center">
