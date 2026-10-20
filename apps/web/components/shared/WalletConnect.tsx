@@ -108,6 +108,9 @@ export function WalletConnect() {
 
   return (
     <div className="flex flex-col gap-2 md:flex-row md:items-center">
+      <div className="sr-only" role="status" aria-live="polite">
+        {copied ? "Address copied" : ""}
+      </div>
       {/* Network Badge */}
       {connected && (
         <div className="flex flex-col gap-2">
@@ -139,7 +142,10 @@ export function WalletConnect() {
           </div>
 
           {networkSwitchError && (
-            <div className="flex flex-col gap-1 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-md px-2.5 py-2">
+            <div
+              role="alert"
+              className="flex flex-col gap-1 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-md px-2.5 py-2"
+            >
               <span className="flex items-start gap-1.5">
                 <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                 <span>
@@ -172,7 +178,7 @@ export function WalletConnect() {
 
             <button
               onClick={handleCopy}
-              className="p-1.5 text-slate-500 hover:text-teal-400 transition-colors"
+              className="p-3 text-slate-500 hover:text-teal-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               title="Copy Address"
               aria-label="Copy wallet address"
             >
@@ -183,10 +189,10 @@ export function WalletConnect() {
               )}
             </button>
 
-            <div className="w-px h-4 bg-border mx-1" />
+            <div className="w-px h-4 bg-border mx-3" />
 
             <button
-              className="p-1.5 text-slate-500 hover:text-rose-400 transition-colors"
+              className="p-3 text-slate-500 hover:text-rose-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
               onClick={disconnectWallet}
               title="Disconnect Wallet"
               aria-label="Disconnect wallet"
@@ -211,7 +217,10 @@ export function WalletConnect() {
       </div>
 
       {walletError && errorCode === "user_rejected" && (
-        <div className="flex items-center gap-1.5 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-md px-2.5 py-1">
+        <div
+          role="status"
+          className="flex items-center gap-1.5 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-md px-2.5 py-1"
+        >
           <AlertCircle className="h-3.5 w-3.5 shrink-0" />
           <span className="truncate max-w-xs">
             You cancelled the connection request
@@ -230,21 +239,32 @@ export function WalletConnect() {
       )}
 
       {walletError && errorCode === "not_installed" && (
-        <a
-          href="https://www.freighter.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-md px-2.5 py-1 hover:bg-amber-500/20 transition-all"
+        <div
+          role="status"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              window.open("https://www.freighter.app/", "_blank", "noopener noreferrer");
+            }
+          }}
+          onClick={() => {
+            window.open("https://www.freighter.app/", "_blank", "noopener noreferrer");
+          }}
+          className="inline-flex items-center gap-1.5 text-xs text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-md px-2.5 py-1 hover:bg-amber-500/20 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
         >
           <span>Install Freighter</span>
           <ExternalLink className="h-3.5 w-3.5" />
-        </a>
+        </div>
       )}
 
       {walletError &&
         errorCode !== "user_rejected" &&
         errorCode !== "not_installed" && (
-          <div className="flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-md px-2.5 py-1">
+          <div
+            role="alert"
+            className="flex items-center gap-1.5 text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-md px-2.5 py-1"
+          >
             <AlertCircle className="h-3.5 w-3.5 shrink-0" />
             <span className="truncate max-w-xs">{walletError}</span>
           </div>

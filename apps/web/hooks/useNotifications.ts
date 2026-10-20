@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRecentEvents } from "./useEvents";
-import { useInvoices } from "./useInvoices";
+import { useInvoicesList } from "./useInvoices";
 import { useWalletStore } from "@/store/wallet";
 import {
   NotificationEvent,
@@ -10,9 +10,10 @@ import { notificationHistoryKey } from "@/lib/storage";
 import { prefsStorageKey } from "@/lib/notification-preferences";
 
 export function useNotifications() {
-  const { address, role } = useWalletStore();
-  const { events } = useRecentEvents(100, { refetchInterval: 15000 });
-  const { invoices } = useInvoices({ limit: 500 });
+  const address = useWalletStore(s => s.address);
+  const role = useWalletStore(s => s.role);
+  const { events } = useRecentEvents(100, { refetchInterval: 15000, enabled: !!address });
+  const { invoices } = useInvoicesList({ limit: 20, enabled: !!address });
 
   const [notifications, setNotifications] = useState<NotificationEvent[]>([]);
 

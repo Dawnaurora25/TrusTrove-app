@@ -34,12 +34,14 @@ export function useInvoicesList(filters?: {
   issuer?: string;
   page?: number;
   limit?: number;
+  enabled?: boolean;
 }) {
   const invoicesQuery = useQuery<PaginatedInvoices>({
     queryKey: ["invoices", filters],
     queryFn: () => getInvoices(filters),
     refetchInterval: 15000,
     staleTime: 15000,
+    enabled: filters?.enabled ?? true,
   });
 
   return {

@@ -100,6 +100,31 @@ describe("InvoiceTable", () => {
     fireEvent.click(screen.getByRole("button", { name: /Next/i }));
     expect(onPageChange).toHaveBeenCalledWith(2);
   });
+  it("has an accessible name for the items per page select", () => {
+    const onPageChange = vi.fn();
+    const onLimitChange = vi.fn();
+
+    renderWithQueryClient(
+      <InvoiceTable
+        invoices={mockInvoices as any}
+        pagination={{
+          page: 1,
+          limit: 20,
+          total: 40,
+          totalPages: 2,
+          onPageChange,
+          onLimitChange,
+        }}
+      />,
+    );
+
+    const select = screen.getByLabelText("Items per page");
+    expect(select).toHaveAttribute("id", "items-per-page-select");
+    fireEvent.change(select, {
+      target: { value: "50" },
+    });
+    expect(onLimitChange).toHaveBeenCalledWith(50);
+  });
 
   // #802 — semantic table structure
   it("renders a <table> element with role=grid and aria-label", () => {

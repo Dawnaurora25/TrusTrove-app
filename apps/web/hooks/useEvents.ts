@@ -10,6 +10,11 @@ interface UseRecentEventsOptions {
    * (issue #1115). Leave unset for protocol-wide events.
    */
   issuer?: string;
+  /**
+   * If false, the query will not be executed. Useful for disabling the query
+   * when the wallet is not connected.
+   */
+  enabled?: boolean;
 }
 
 export function useRecentEvents(
@@ -21,6 +26,7 @@ export function useRecentEvents(
     queryKey: ["recentEvents", limit, issuer],
     queryFn: () => getRecentEvents(limit, issuer),
     refetchInterval: options?.refetchInterval,
+    enabled: options?.enabled ?? true,
   });
 
   return {

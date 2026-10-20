@@ -178,10 +178,11 @@ function InvoicePagination({
     <div className="border-t border-border/60 bg-[#080c10]/55 px-4 py-4 sm:px-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-1.5">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+          <label htmlFor="items-per-page-select" className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
             Items per page
-          </p>
+          </label>
           <select
+            id="items-per-page-select"
             value={limit}
             onChange={(event) => onLimitChange(Number(event.target.value))}
             className="min-w-[140px] rounded border border-border bg-[#0b1117] px-3 py-2 font-mono text-xs text-white outline-none transition-colors focus:border-primary"

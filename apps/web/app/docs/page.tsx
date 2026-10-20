@@ -26,6 +26,14 @@ export default function DocsPage() {
       "DELEGATING TRAFFIC TO SECURE SOURCE...",
     ];
 
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      setLogs(logMessages);
+      setBootFinished(true);
+      return;
+    }
+
     let currentLogIndex = 0;
     const logInterval = setInterval(() => {
       if (currentLogIndex < logMessages.length) {
@@ -34,7 +42,6 @@ export default function DocsPage() {
       } else {
         clearInterval(logInterval);
         setBootFinished(true);
-        goToDocs();
       }
     }, 350);
 
@@ -69,22 +76,24 @@ export default function DocsPage() {
           </div>
 
           <div className="min-h-[160px] bg-background border border-border/40 rounded p-4 text-[11px] leading-relaxed text-muted-foreground space-y-1 mb-6">
-            {logs.map((log, idx) => (
-              <div key={idx} className="flex gap-2">
-                <span className="text-muted-foreground font-bold select-none">
-                  [LOG_{idx}]
-                </span>
-                <span
-                  className={
-                    idx === logs.length - 1 && !bootFinished
-                      ? "text-primary"
-                      : "text-foreground"
-                  }
-                >
-                  {log}
-                </span>
-              </div>
-            ))}
+            <div role="status" aria-live="polite">
+              {logs.map((log, idx) => (
+                <div key={idx} className="flex gap-2">
+                  <span className="text-muted-foreground font-bold select-none">
+                    [LOG_{idx}]
+                  </span>
+                  <span
+                    className={
+                      idx === logs.length - 1 && !bootFinished
+                        ? "text-primary"
+                        : "text-foreground"
+                    }
+                  >
+                    {log}
+                  </span>
+                </div>
+              ))}
+            </div>
             {!bootFinished && (
               <>
                 <div className="flex items-center gap-2 pt-1">
