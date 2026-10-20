@@ -24,9 +24,11 @@ export function TransactionPending({
   // rendered statically instead of looping indefinitely.
   const shouldReduceMotion = useReducedMotion();
 
-  // Only allow dismissal (Escape / backdrop click) after the transaction has
-  // completed, i.e. when txHash is available.
-  const canDismiss = timedOut || Boolean(txHash && onClose);
+  // Only allow dismissal (Escape / backdrop click) when a close callback
+  // exists *and* the transaction has completed or timed out. Without onClose
+  // there is nothing safe to call, so Escape/backdrop must remain no-ops even
+  // after the 60s timer fires.
+  const canDismiss = Boolean(onClose) && (timedOut || Boolean(txHash));
 
   const overlayRef = useFocusTrap<HTMLDivElement>(
     isOpen,

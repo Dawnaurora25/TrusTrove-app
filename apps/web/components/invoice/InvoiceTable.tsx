@@ -469,7 +469,9 @@ export function InvoiceTable({
         <div className="bg-[#080c10]/40">{emptyNode}</div>
       ) : (
         <>
-          <div className="overflow-x-auto">
+          {/* Desktop table: hidden below md so phones don't get a
+              horizontally-scrolling table *and* duplicate mobile cards. */}
+          <div className="overflow-x-auto hidden md:block">
             {/* display:block overrides UA table layout so thead/tbody can use
                 flex rows whose column widths are kept in sync via COL_FLEX. */}
             <table
