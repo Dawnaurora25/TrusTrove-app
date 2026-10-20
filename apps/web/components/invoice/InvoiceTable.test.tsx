@@ -78,12 +78,8 @@ describe("InvoiceTable", () => {
     expect(cardsWrapper).toBeTruthy();
 
     // On mobile only the cards are visible: exactly one copy of each invoice.
-    expect(
-      within(cardsWrapper!).getAllByText(/1,000.00 USDC/),
-    ).toHaveLength(1);
-    expect(
-      within(cardsWrapper!).getAllByText(/2,000.00 USDC/),
-    ).toHaveLength(1);
+    expect(within(cardsWrapper!).getAllByText(/1,000.00 USDC/)).toHaveLength(1);
+    expect(within(cardsWrapper!).getAllByText(/2,000.00 USDC/)).toHaveLength(1);
 
     // Both views still render one copy each in the DOM (table + mobile card).
     expect(screen.getAllByText(/1,000.00 USDC/)).toHaveLength(2);

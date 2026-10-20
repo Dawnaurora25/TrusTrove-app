@@ -37,7 +37,9 @@ describe("TransactionPending", () => {
       });
 
       const backdrop = container.firstChild as HTMLElement;
-      expect(() => fireEvent.keyDown(backdrop, { key: "Escape" })).not.toThrow();
+      expect(() =>
+        fireEvent.keyDown(backdrop, { key: "Escape" }),
+      ).not.toThrow();
       expect(() => fireEvent.click(backdrop)).not.toThrow();
     } finally {
       vi.useRealTimers();

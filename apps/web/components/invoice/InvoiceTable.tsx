@@ -178,7 +178,10 @@ function InvoicePagination({
     <div className="border-t border-border/60 bg-[#080c10]/55 px-4 py-4 sm:px-5">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-1.5">
-          <label htmlFor="items-per-page-select" className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+          <label
+            htmlFor="items-per-page-select"
+            className="text-[10px] font-bold uppercase tracking-wider text-slate-500"
+          >
             Items per page
           </label>
           <select

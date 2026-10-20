@@ -10,10 +10,17 @@ vi.mock("./useEvents", () => ({
   useRecentEvents: vi.fn(() => ({ events: mockEvents })),
 }));
 vi.mock("./useInvoices", () => ({
-  useInvoices: vi.fn(() => ({ invoices: mockInvoices })),
+  useInvoicesList: vi.fn(() => ({ invoices: mockInvoices })),
 }));
 vi.mock("@/store/wallet", () => ({
-  useWalletStore: vi.fn(() => ({ address: "addr1", role: mockRole })),
+  // Honor the selector like the real Zustand store: returning a fresh object
+  // for every selector call changes the hook's effect deps on every render.
+  useWalletStore: vi.fn(
+    (selector?: (state: { address: string; role: string }) => unknown) => {
+      const state = { address: "addr1", role: mockRole };
+      return selector ? selector(state) : state;
+    },
+  ),
 }));
 
 describe("useNotifications", () => {
