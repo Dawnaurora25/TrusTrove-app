@@ -179,7 +179,10 @@ export function getErrorMessage(
  * // "Custom fallback"
  * ```
  */
-export function getUserFriendlyMessage(error: unknown, fallback?: string): string {
+export function getUserFriendlyMessage(
+  error: unknown,
+  fallback?: string,
+): string {
   const message = getErrorMessage(error);
   if (fallback && message === "An unexpected error occurred") {
     return fallback;
